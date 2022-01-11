@@ -1,15 +1,18 @@
+import 'package:flutter/material.dart';
+
 import 'package:DevQuiz/challenge/widgets/awnser/awnser_widget.dart';
 import 'package:DevQuiz/core/app_text_styles.dart';
-import 'package:DevQuiz/shared/models/awnser_model.dart';
+import 'package:DevQuiz/core/app_extensions.dart';
 import 'package:DevQuiz/shared/models/question_model.dart';
-import 'package:flutter/material.dart';
 
 class QuizWidget extends StatefulWidget {
   final QuestionModel question;
-  final VoidCallback onChange;
-
-  const QuizWidget({Key? key, required this.question, required this.onChange})
-      : super(key: key);
+  final ValueChanged<bool> onChange;
+  const QuizWidget({
+    Key? key,
+    required this.question,
+    required this.onChange,
+  }) : super(key: key);
 
   @override
   _QuizWidgetState createState() => _QuizWidgetState();
@@ -17,37 +20,35 @@ class QuizWidget extends StatefulWidget {
 
 class _QuizWidgetState extends State<QuizWidget> {
   int indexSelected = -1;
-
-  AwnserModel awnser(int index) => widget.question.awnsers[index];
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 64,
-          ),
           Text(
-            widget.question.title,
-            style: AppTextStyles.heading,
+            this.widget.question.title,
+            style: AppTextStyles.heading15,
           ),
           SizedBox(
-            height: 24,
+            height: 15,
           ),
-          for (var i = 0; i < widget.question.awnsers.length; i++)
-            AwnserWidget(
-              awnser: awnser(i),
+          ...widget.question.answers.mapIndexed(
+            (i, e) => AnwserWidget(
               disabled: indexSelected != -1,
+              title: e.title,
               isSelected: indexSelected == i,
-              onTap: () {
+              isRight: e.isRight,
+              answer: e,
+              onTap: (isRight) {
                 indexSelected = i;
-
                 setState(() {});
                 Future.delayed(Duration(seconds: 1))
-                    .then((value) => widget.onChange());
+                    .then((_) => widget.onChange(isRight));
               },
-            )
+            ),
+          )
         ],
       ),
     );

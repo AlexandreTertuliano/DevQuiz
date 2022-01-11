@@ -5,7 +5,7 @@ import 'package:DevQuiz/shared/models/question_model.dart';
 enum Level { facil, medio, dificil, perito }
 
 extension LevelStringExt on String {
-  Level get parse => {
+  Level get levelParse => {
         "facil": Level.facil,
         "medio": Level.medio,
         "dificil": Level.dificil,
@@ -25,25 +25,27 @@ extension LevelExt on Level {
 class QuizModel {
   final String title;
   final List<QuestionModel> questions;
-  final int questionsAnswered;
+  final int questionAnswered;
   final String imagem;
   final Level level;
 
-  QuizModel({
-    required this.title,
-    required this.questions,
-    this.questionsAnswered = 0,
-    required this.imagem,
-    required this.level,
-  });
+  QuizModel(
+      {required this.title,
+      required this.questions,
+      this.questionAnswered = 0,
+      required this.imagem,
+      required this.level});
+
+  get completed =>
+      this.questionAnswered.toString() + "/" + this.questions.length.toString();
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
       'questions': questions.map((x) => x.toMap()).toList(),
-      'questionsAnswered': questionsAnswered,
+      'questionAnswered': questionAnswered,
       'imagem': imagem,
-      'level': level.parse,
+      'level': level.parse
     };
   }
 
@@ -52,9 +54,9 @@ class QuizModel {
       title: map['title'],
       questions: List<QuestionModel>.from(
           map['questions']?.map((x) => QuestionModel.fromMap(x))),
-      questionsAnswered: map['questionsAnswered'],
+      questionAnswered: map['questionAnswered'],
       imagem: map['imagem'],
-      level: map['level'].toString().parse,
+      level: map['level'].toString().levelParse,
     );
   }
 

@@ -1,3 +1,3 @@
-class QuizController{
-  var indexSelected = 0;
+class QuizController {
+  var indexSelected;
 }
